@@ -1,0 +1,4 @@
+import '../config/module-alias'
+import { app } from '@/routes'
+
+app.listen(3333, () => console.log('Server running at port 3333!'))
