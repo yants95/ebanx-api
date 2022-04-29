@@ -9,17 +9,17 @@ export class EventRepository {
     return event
   }
 
-  findByDestination (destination: string): Event | undefined {
-    return this.events.find(event => event.destination === destination)
-  }
-
-  findByOrigin (origin: string): Event | undefined {
-    return this.events.find(event => event.origin === origin)
+  findByAccountNumber (accountNumber: string): Event | undefined {
+    return this.events.find(event => event.account === accountNumber)
   }
 
   increaseBalance (event: Event, amount: number): Event {
     event.amount += amount
-    console.log('event')
+    return event
+  }
+
+  decreaseBalance (event: Event, amount: number): Event {
+    event.amount -= amount
     return event
   }
 }
