@@ -11,3 +11,10 @@ export const mockWithdraw = {
   account: '100',
   amount: 10
 }
+
+export const mockTransfer = {
+  type: EventType.TRANSFER,
+  origin: '100',
+  amount: 15,
+  destination: '300'
+}

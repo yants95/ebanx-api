@@ -26,5 +26,10 @@ export class EventService {
       this.eventRepository.decreaseBalance(event, data.amount)
       return EventResponses.generateResponse(event)
     }
+    if (data.type.toUpperCase() === EventType.TRANSFER) {
+      this.eventRepository.decreaseBalance(event, data.amount)
+      this.eventRepository.increaseBalance(event, data.amount)
+      return EventResponses.generateResponse(event)
+    }
   }
 }
