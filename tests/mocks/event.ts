@@ -5,3 +5,9 @@ export const mockDeposit = {
   account: '100',
   amount: 10
 }
+
+export const mockWithdraw = {
+  type: EventType.WITHDRAW,
+  account: '100',
+  amount: 10
+}

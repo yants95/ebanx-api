@@ -1,4 +1,5 @@
 import { EventDTO, EventType } from '@/entities'
+import { RequestError } from '@/errors'
 import { EventRepository } from '@/repositories'
 import { EventResponses } from '@/responses'
 
@@ -19,6 +20,11 @@ export class EventService {
         const eventCreated = this.eventRepository.create(data)
         return EventResponses.generateResponse(eventCreated)
       }
+    }
+    if (!event) throw new RequestError('Account does not exists.')
+    if (data.type.toUpperCase() === EventType.WITHDRAW) {
+      this.eventRepository.decreaseBalance(event, data.amount)
+      return EventResponses.generateResponse(event)
     }
   }
 }
