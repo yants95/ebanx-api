@@ -1,7 +1,7 @@
 import { EventType } from '@/entities'
 
-export const mockAccountWithInitialBalance = {
+export const mockDeposit = {
   type: EventType.DEPOSIT,
-  destination: '100',
+  account: '100',
   amount: 10
 }
