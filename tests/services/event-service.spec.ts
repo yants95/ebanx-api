@@ -1,7 +1,7 @@
 import { RequestError } from '@/errors'
 import { EventRepository } from '@/repositories'
 import { EventService } from '@/services'
-import { mockDeposit, mockTransfer, mockWithdraw } from '@/tests/mocks'
+import { mockDeposit, mockWithdraw } from '@/tests/mocks'
 
 describe('EventService', () => {
   let eventRepository: EventRepository
@@ -48,36 +48,6 @@ describe('EventService', () => {
       const error = new RequestError('Account does not exists.')
 
       expect(() => eventService.execute(mockWithdraw)).toThrow(error.message)
-    })
-  })
-
-  describe('TRANSFER', () => {
-    it('should be able to transfer from a existing account', () => {
-      eventRepository.findByAccountNumber = jest.fn().mockReturnValue(true)
-      eventService.execute({
-        ...mockDeposit,
-        amount: 15
-      })
-
-      const transferResponse = eventService.execute({
-        ...mockTransfer,
-        amount: 0,
-        account: '100'
-      })
-
-      expect(transferResponse.destination).toHaveProperty('id')
-      expect(transferResponse.destination.balance).toEqual(15)
-    })
-
-    it('should not be able to transfer from a non-existing account', () => {
-      eventRepository.findByAccountNumber = jest.fn().mockRejectedValueOnce(undefined)
-      const error = new RequestError('Account does not exists.')
-
-      expect(() => eventService.execute({
-        ...mockTransfer,
-        amount: 0,
-        account: '100'
-      })).toThrow(error.message)
     })
   })
 })
