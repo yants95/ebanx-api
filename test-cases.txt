@@ -15,7 +15,7 @@ GET /balance?account_id=1234
 
 
 --
-# Create account with initial balance
+# Create account with initial balance - OK
 
 POST /event {"type":"deposit", "destination":"100", "amount":10}
 
@@ -23,7 +23,7 @@ POST /event {"type":"deposit", "destination":"100", "amount":10}
 
 
 --
-# Deposit into existing account
+# Deposit into existing account - OK
 
 POST /event {"type":"deposit", "destination":"100", "amount":10}
 
@@ -38,14 +38,14 @@ GET /balance?account_id=100
 200 20
 
 --
-# Withdraw from non-existing account
+# Withdraw from non-existing account - OK
 
 POST /event {"type":"withdraw", "origin":"200", "amount":10}
 
 404 0
 
 --
-# Withdraw from existing account
+# Withdraw from existing account - OK
 
 POST /event {"type":"withdraw", "origin":"100", "amount":5}
 
