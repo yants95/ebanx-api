@@ -7,20 +7,24 @@ export enum EventType {
 }
 
 export type EventData = Event
-export type EventDTO = Omit<Event, 'id'>
+export type EventDTO = {
+  type: EventType
+  amount: number
+  account: string
+  origin?: string
+  destination?: string
+}
 
 export class Event {
   id?: string
   type: EventType
-  origin?: string
   amount: number
-  destination?: string
+  account: string
 
   constructor (event: EventDTO) {
     if (!this.id) this.id = randomUUID()
     this.type = event.type
-    this.origin = event.origin
     this.amount = event.amount
-    this.destination = event.destination
+    this.account = event.account
   }
 }
