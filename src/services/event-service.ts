@@ -34,11 +34,10 @@ export class EventService {
         (data.origin && data.destination)) {
       const originAccount = this.eventRepository.findByAccountNumber(data.origin)
       const destinationAccount = this.eventRepository.findByAccountNumber(data.destination)
-      if (originAccount && destinationAccount) {
-        const originBalance = this.eventRepository.decreaseBalance(originAccount, data.amount)
-        const destinationBalance = this.eventRepository.increaseBalance(destinationAccount, data.amount)
-        return EventResponses.generateResponse(data.type, originBalance, destinationBalance)
-      }
+      if (!originAccount || !destinationAccount) throw new Error()
+      const originBalance = this.eventRepository.decreaseBalance(originAccount, data.amount)
+      const destinationBalance = this.eventRepository.increaseBalance(destinationAccount, data.amount)
+      return EventResponses.generateResponse(data.type, originBalance, destinationBalance)
     }
   }
 
