@@ -27,4 +27,8 @@ export class EventRepository {
     const account = this.events.find(event => event.account === account_id)
     return account?.amount
   }
+
+  reset (): void {
+    this.events = []
+  }
 }

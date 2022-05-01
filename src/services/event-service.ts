@@ -46,4 +46,8 @@ export class EventService {
     if (!account) throw new Error()
     return this.eventRepository.getBalance(filters.account_id)
   }
+
+  reset (): void {
+    this.eventRepository.reset()
+  }
 }

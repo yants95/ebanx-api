@@ -30,4 +30,13 @@ export class EventController {
       }
     }
   }
+
+  reset (_: Request, res: Response): void {
+    try {
+      this.eventService.reset()
+      res.sendStatus(200)
+    } catch (err) {
+      res.status(404).json(err)
+    }
+  }
 }
