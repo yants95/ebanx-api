@@ -42,7 +42,7 @@ describe('EventService', () => {
       expect(withdrawResponse.origin.balance).toEqual(0)
     })
 
-    it('should not be able to withdraw from a non-existing account', () => {
+    it('should not be able to withdraw from non-existing account', () => {
       eventRepository.findByAccountNumber = jest.fn()
 
       expect(() => eventService.execute(mockWithdraw)).toThrow()
@@ -68,6 +68,12 @@ describe('EventService', () => {
       expect(transferResponse.destination).toHaveProperty('id')
       expect(transferResponse.destination.balance).toEqual(15)
     })
+
+    it('should not be able make a transfer from non-existing account', () => {
+      eventRepository.findByAccountNumber = jest.fn()
+
+      expect(() => eventService.execute(mockTransfer)).toThrow()
+    })
   })
 
   describe('BALANCE', () => {
@@ -75,7 +81,7 @@ describe('EventService', () => {
       account_id: '100'
     }
 
-    it('should not be able to get balance from a non-existing account', () => {
+    it('should not be able to get balance from non-existing account', () => {
       eventRepository.findByAccountNumber = jest.fn()
 
       expect(() => eventService.balance(filters)).toThrow()
