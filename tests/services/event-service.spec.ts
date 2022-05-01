@@ -1,6 +1,6 @@
 import { EventRepository } from '@/repositories'
 import { EventService, FilterOptions } from '@/services'
-import { mockDeposit, mockTransfer, mockWithdraw } from '@/tests/mocks'
+import { mockAccountDestination, mockAccountOrigin, mockDeposit, mockTransfer, mockWithdraw } from '@/tests/mocks'
 
 describe('EventService', () => {
   let eventRepository: EventRepository
@@ -17,7 +17,7 @@ describe('EventService', () => {
       const depositResponse = eventService.execute(mockDeposit)
 
       expect(depositResponse.destination).toHaveProperty('id')
-      expect(depositResponse.destination.balance).toEqual(10)
+      expect(depositResponse.destination.balance).toEqual(15)
     })
 
     it('should be able to deposit into existing account', () => {
@@ -27,7 +27,7 @@ describe('EventService', () => {
       const depositResponse = eventService.execute(mockDeposit)
 
       expect(depositResponse.destination).toHaveProperty('id')
-      expect(depositResponse.destination.balance).toEqual(20)
+      expect(depositResponse.destination.balance).toEqual(30)
     })
   })
 
@@ -38,8 +38,8 @@ describe('EventService', () => {
 
       const withdrawResponse = eventService.execute(mockWithdraw)
 
-      expect(withdrawResponse.destination).toHaveProperty('id')
-      expect(withdrawResponse.destination.balance).toEqual(0)
+      expect(withdrawResponse.origin).toHaveProperty('id')
+      expect(withdrawResponse.origin.balance).toEqual(0)
     })
 
     it('should not be able to withdraw from a non-existing account', () => {
@@ -51,30 +51,22 @@ describe('EventService', () => {
 
   describe('TRANSFER', () => {
     it('should be able to transfer from a existing account', () => {
-      eventRepository.findByAccountNumber = jest.fn().mockReturnValue(true)
+      eventService.execute(mockDeposit)
       eventService.execute({
         ...mockDeposit,
-        amount: 15
-      })
-
-      const transferResponse = eventService.execute({
-        ...mockTransfer,
         amount: 0,
-        account: '100'
+        destination: '300'
       })
+      eventRepository.findByAccountNumber = jest.fn()
+        .mockReturnValue(mockAccountOrigin)
+        .mockReturnValueOnce(mockAccountDestination)
 
+      const transferResponse = eventService.execute(mockTransfer)
+
+      expect(transferResponse.origin).toHaveProperty('id')
+      expect(transferResponse.origin.balance).toEqual(0)
       expect(transferResponse.destination).toHaveProperty('id')
       expect(transferResponse.destination.balance).toEqual(15)
-    })
-
-    it('should not be able to transfer from a non-existing account', () => {
-      eventRepository.findByAccountNumber = jest.fn()
-
-      expect(() => eventService.execute({
-        ...mockTransfer,
-        amount: 0,
-        account: '100'
-      })).toThrow()
     })
   })
 
@@ -97,9 +89,7 @@ describe('EventService', () => {
         account_id: '100'
       })
 
-      console.log('balanceResponse', balanceResponse)
-
-      expect(balanceResponse).toEqual(10)
+      expect(balanceResponse).toBe(15)
     })
   })
 })
