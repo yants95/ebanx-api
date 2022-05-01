@@ -1,7 +1,10 @@
 import { EventDTO, EventType } from '@/entities'
-import { RequestError } from '@/errors'
 import { EventRepository } from '@/repositories'
 import { EventResponses } from '@/responses'
+
+export type FilterOptions = {
+  account_id: string
+}
 
 export class EventService {
   private readonly eventRepository: EventRepository
@@ -11,25 +14,31 @@ export class EventService {
   }
 
   execute (data: EventDTO): any {
-    const event = this.eventRepository.findByAccountNumber(data.account)
+    const account = this.eventRepository.findByAccountNumber(data.account)
     if (data.type.toUpperCase() === EventType.DEPOSIT) {
-      if (event) {
-        this.eventRepository.increaseBalance(event, data.amount)
-        return EventResponses.generateResponse(event)
+      if (account) {
+        this.eventRepository.increaseBalance(account, data.amount)
+        return EventResponses.generateResponse(account)
       } else {
-        const eventCreated = this.eventRepository.create(data)
-        return EventResponses.generateResponse(eventCreated)
+        const event = this.eventRepository.create(data)
+        return EventResponses.generateResponse(event)
       }
     }
-    if (!event) throw new RequestError('Account does not exists.')
+    if (!account) throw new Error()
     if (data.type.toUpperCase() === EventType.WITHDRAW) {
-      this.eventRepository.decreaseBalance(event, data.amount)
-      return EventResponses.generateResponse(event)
+      this.eventRepository.decreaseBalance(account, data.amount)
+      return EventResponses.generateResponse(account)
     }
     if (data.type.toUpperCase() === EventType.TRANSFER) {
-      this.eventRepository.decreaseBalance(event, data.amount)
-      this.eventRepository.increaseBalance(event, data.amount)
-      return EventResponses.generateResponse(event)
+      this.eventRepository.decreaseBalance(account, data.amount)
+      this.eventRepository.increaseBalance(account, data.amount)
+      return EventResponses.generateResponse(account)
     }
+  }
+
+  balance (filters: FilterOptions): any {
+    const account = this.eventRepository.findByAccountNumber(filters.account_id)
+    if (!account) throw new Error()
+    return this.eventRepository.getBalance(filters.account_id)
   }
 }

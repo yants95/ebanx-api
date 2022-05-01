@@ -8,7 +8,7 @@ export class EventResponses {
       case EventType.DEPOSIT:
         response = {
           destination: {
-            id: data.id,
+            id: data.account,
             balance: data.amount
           }
         }
@@ -16,7 +16,7 @@ export class EventResponses {
       case EventType.WITHDRAW:
         response = {
           origin: {
-            id: data.id,
+            id: data.account,
             balance: data.amount
           }
         }
@@ -24,11 +24,11 @@ export class EventResponses {
       case EventType.TRANSFER:
         response = {
           origin: {
-            id: data.id,
+            id: data.account,
             balance: data.amount
           },
           destination: {
-            id: data.id,
+            id: data.account,
             balance: data.amount
           }
         }

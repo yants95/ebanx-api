@@ -4,7 +4,7 @@
   "description": "EBANX API",
   "main": "index.js",
   "scripts": {
-    "start": "node -r dist/main",
+    "start": "npm run build && node dist/main",
     "dev": "ts-node-dev -r tsconfig-paths/register --respawn --transpile-only --ignore-watch node_modules src/main",
     "build": "rimraf dist && tsc -p tsconfig-build.json",
     "test": "jest --passWithNoTests --no-cache --runInBand",

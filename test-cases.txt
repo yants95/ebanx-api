@@ -7,7 +7,7 @@ POST /reset
 
 
 --
-# Get balance for non-existing account
+# Get balance for non-existing account - OK
 
 GET /balance?account_id=1234
 
@@ -31,7 +31,7 @@ POST /event {"type":"deposit", "destination":"100", "amount":10}
 
 
 --
-# Get balance for existing account
+# Get balance for existing account - OK
 
 GET /balance?account_id=100
 

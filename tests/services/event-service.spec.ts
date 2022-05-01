@@ -1,6 +1,5 @@
-import { RequestError } from '@/errors'
 import { EventRepository } from '@/repositories'
-import { EventService } from '@/services'
+import { EventService, FilterOptions } from '@/services'
 import { mockDeposit, mockTransfer, mockWithdraw } from '@/tests/mocks'
 
 describe('EventService', () => {
@@ -14,7 +13,7 @@ describe('EventService', () => {
 
   describe('DEPOSIT', () => {
     it('should be able to create a new account with initial balance', () => {
-      eventRepository.findByAccountNumber = jest.fn().mockReturnValue(undefined)
+      eventRepository.findByAccountNumber = jest.fn()
       const depositResponse = eventService.execute(mockDeposit)
 
       expect(depositResponse.destination).toHaveProperty('id')
@@ -44,10 +43,9 @@ describe('EventService', () => {
     })
 
     it('should not be able to withdraw from a non-existing account', () => {
-      eventRepository.findByAccountNumber = jest.fn().mockRejectedValueOnce(undefined)
-      const error = new RequestError('Account does not exists.')
+      eventRepository.findByAccountNumber = jest.fn()
 
-      expect(() => eventService.execute(mockWithdraw)).toThrow(error.message)
+      expect(() => eventService.execute(mockWithdraw)).toThrow()
     })
   })
 
@@ -70,14 +68,38 @@ describe('EventService', () => {
     })
 
     it('should not be able to transfer from a non-existing account', () => {
-      eventRepository.findByAccountNumber = jest.fn().mockRejectedValueOnce(undefined)
-      const error = new RequestError('Account does not exists.')
+      eventRepository.findByAccountNumber = jest.fn()
 
       expect(() => eventService.execute({
         ...mockTransfer,
         amount: 0,
         account: '100'
-      })).toThrow(error.message)
+      })).toThrow()
+    })
+  })
+
+  describe('BALANCE', () => {
+    const filters: FilterOptions = {
+      account_id: '100'
+    }
+
+    it('should not be able to get balance from a non-existing account', () => {
+      eventRepository.findByAccountNumber = jest.fn()
+
+      expect(() => eventService.balance(filters)).toThrow()
+    })
+
+    it('should be able to get balance from a existing account', () => {
+      eventRepository.findByAccountNumber = jest.fn().mockReturnValue(true)
+      eventService.execute(mockDeposit)
+
+      const balanceResponse = eventService.balance({
+        account_id: '100'
+      })
+
+      console.log('balanceResponse', balanceResponse)
+
+      expect(balanceResponse).toEqual(10)
     })
   })
 })
