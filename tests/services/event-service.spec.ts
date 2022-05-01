@@ -98,4 +98,14 @@ describe('EventService', () => {
       expect(balanceResponse).toBe(15)
     })
   })
+
+  describe('RESET', () => {
+    it('should be able to reset events data', () => {
+      const eventServiceSpy = jest.spyOn(eventService, 'reset')
+
+      eventService.reset()
+
+      expect(eventServiceSpy).toHaveBeenCalledTimes(1)
+    })
+  })
 })
