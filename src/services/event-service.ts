@@ -14,25 +14,31 @@ export class EventService {
   }
 
   execute (data: EventDTO): any {
-    const account = this.eventRepository.findByAccountNumber(data.account)
-    if (data.type.toUpperCase() === EventType.DEPOSIT) {
-      if (account) {
-        this.eventRepository.increaseBalance(account, data.amount)
-        return EventResponses.generateResponse(account)
+    if (data.type.toUpperCase() === EventType.DEPOSIT && data.destination) {
+      const destination = this.eventRepository.findByAccountNumber(data.destination)
+      if (destination) {
+        this.eventRepository.increaseBalance(destination, data.amount)
+        return EventResponses.generateResponse(data.type, null, destination)
       } else {
-        const event = this.eventRepository.create(data)
-        return EventResponses.generateResponse(event)
+        const account = this.eventRepository.create(data)
+        return EventResponses.generateResponse(data.type, null, account)
       }
     }
-    if (!account) throw new Error()
-    if (data.type.toUpperCase() === EventType.WITHDRAW) {
-      this.eventRepository.decreaseBalance(account, data.amount)
-      return EventResponses.generateResponse(account)
+    if (data.type.toUpperCase() === EventType.WITHDRAW && data.origin) {
+      const origin = this.eventRepository.findByAccountNumber(data.origin)
+      if (!origin) throw new Error()
+      this.eventRepository.decreaseBalance(origin, data.amount)
+      return EventResponses.generateResponse(data.type, origin)
     }
-    if (data.type.toUpperCase() === EventType.TRANSFER) {
-      this.eventRepository.decreaseBalance(account, data.amount)
-      this.eventRepository.increaseBalance(account, data.amount)
-      return EventResponses.generateResponse(account)
+    if ((data.type.toUpperCase() === EventType.TRANSFER) &&
+        (data.origin && data.destination)) {
+      const originAccount = this.eventRepository.findByAccountNumber(data.origin)
+      const destinationAccount = this.eventRepository.findByAccountNumber(data.destination)
+      if (originAccount && destinationAccount) {
+        const originBalance = this.eventRepository.decreaseBalance(originAccount, data.amount)
+        const destinationBalance = this.eventRepository.increaseBalance(destinationAccount, data.amount)
+        return EventResponses.generateResponse(data.type, originBalance, destinationBalance)
+      }
     }
   }
 

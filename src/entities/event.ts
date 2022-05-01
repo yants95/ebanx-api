@@ -1,3 +1,5 @@
+import { randomUUID } from 'crypto'
+
 export enum EventType {
   TRANSFER = 'TRANSFER',
   WITHDRAW = 'WITHDRAW',
@@ -8,19 +10,18 @@ export type EventData = Event
 export type EventDTO = {
   type: EventType
   amount: number
-  account: string
-  payee?: string
-  payer?: string
+  origin?: string
+  destination?: string
 }
 
 export class Event {
-  type: EventType
+  id: string
   amount: number
   account: string
 
   constructor (event: EventDTO) {
+    this.id = randomUUID()
     this.amount = event.amount
-    this.type = event.type
-    this.account = event.account
+    this.account = event.origin ?? event.destination ?? '0'
   }
 }

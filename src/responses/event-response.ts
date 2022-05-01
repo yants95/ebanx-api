@@ -1,35 +1,34 @@
-import { Event, EventData, EventType } from '@/entities'
+import { Event, EventType } from '@/entities'
 
 export class EventResponses {
-  static generateResponse (data: EventData & Event): any {
-    const { type } = data
+  static generateResponse (type: EventType, origin?: Event | null, destination?: Event | null): any {
     let response: any = {}
     switch (type.toUpperCase()) {
       case EventType.DEPOSIT:
         response = {
           destination: {
-            id: data.account,
-            balance: data.amount
+            id: destination?.account,
+            balance: destination?.amount
           }
         }
         break
       case EventType.WITHDRAW:
         response = {
           origin: {
-            id: data.account,
-            balance: data.amount
+            id: origin?.account,
+            balance: origin?.amount
           }
         }
         break
       case EventType.TRANSFER:
         response = {
           origin: {
-            id: data.account,
-            balance: data.amount
+            id: origin?.account,
+            balance: origin?.amount
           },
           destination: {
-            id: data.account,
-            balance: data.amount
+            id: destination?.account,
+            balance: destination?.amount
           }
         }
         break

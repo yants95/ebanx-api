@@ -1,4 +1,4 @@
-import { Event, EventDTO } from '@/entities'
+import { EventDTO, Event } from '@/entities'
 
 export class EventRepository {
   events: Event[] = []
@@ -10,8 +10,6 @@ export class EventRepository {
   }
 
   findByAccountNumber (accountNumber: string): Event | undefined {
-    console.log('accountNumber', accountNumber)
-    console.log('events array', this.events)
     return this.events.find(event => String(event.account) === String(accountNumber))
   }
 

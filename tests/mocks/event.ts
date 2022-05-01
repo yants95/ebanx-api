@@ -1,20 +1,37 @@
-import { EventType } from '@/entities'
+import { Event, EventDTO, EventType } from '@/entities'
+import { randomUUID } from 'crypto'
 
-export const mockDeposit = {
+const AMOUNT = 15
+const ORIGIN_ACCOUNT = '100'
+const DESTINATION_ACCOUNT = '300'
+
+export const mockDeposit: EventDTO = {
   type: EventType.DEPOSIT,
-  account: '100',
-  amount: 10
+  amount: AMOUNT,
+  destination: ORIGIN_ACCOUNT
 }
 
-export const mockWithdraw = {
+export const mockWithdraw: EventDTO = {
   type: EventType.WITHDRAW,
-  account: '100',
-  amount: 10
+  origin: ORIGIN_ACCOUNT,
+  amount: AMOUNT
 }
 
-export const mockTransfer = {
+export const mockTransfer: EventDTO = {
   type: EventType.TRANSFER,
-  origin: '100',
-  amount: 15,
-  destination: '300'
+  amount: AMOUNT,
+  origin: ORIGIN_ACCOUNT,
+  destination: DESTINATION_ACCOUNT
+}
+
+export const mockAccountOrigin: Event = {
+  id: randomUUID(),
+  account: ORIGIN_ACCOUNT,
+  amount: AMOUNT
+}
+
+export const mockAccountDestination: Event = {
+  id: randomUUID(),
+  account: DESTINATION_ACCOUNT,
+  amount: 0
 }
