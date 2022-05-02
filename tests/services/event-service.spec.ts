@@ -91,9 +91,7 @@ describe('EventService', () => {
       eventRepository.findByAccountNumber = jest.fn().mockReturnValue(true)
       eventService.execute(mockDeposit)
 
-      const balanceResponse = eventService.balance({
-        account_id: '100'
-      })
+      const balanceResponse = eventService.balance(filters)
 
       expect(balanceResponse).toBe(15)
     })
